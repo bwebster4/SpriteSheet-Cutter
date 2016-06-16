@@ -5,7 +5,7 @@ import os
 # Source:
 # http://stackoverflow.com/questions/6059217/cutting-one-image-into-multiple-images-using-the-python-image-library
 
-def slice(image_path, out_name, out_dir, slice_size, padding):
+def slice_img(image_path, out_name, out_dir, slice_size, padding):
 	img = Image.open(image_path)
 	width, height = img.size
 
@@ -34,11 +34,12 @@ def slice(image_path, out_name, out_dir, slice_size, padding):
 
 			working_slice = img.crop(bbox)
 			print count
-			if working_slice.getbbox():
-				working_slice.save(os.path.join(out_dir, out_name + '_' + str(count) + '.png'))
-
-				upper += slice_size + padding
+			if not len(working_slice.getcolors()) == 1:
+    # either all black or all white
+				working_slice.save(os.path.join(out_dir, out_name + str(count) + '.png'))
 				count = count + 1
+
+			upper += slice_size + padding
 		left += slice_size + padding
 		upper = 0
 
@@ -49,5 +50,5 @@ if __name__ == '__main__':
 	out_name = raw_input("Enter the output name of the image: ")
 	out_dir = input("Enter the output directory of the image: ")
 
-	slice(image_path, out_name, out_dir, 16, 1)
+	slice_img(image_path, out_name, out_dir, 16, 1)
 
